@@ -3,6 +3,7 @@ package com.example.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.entity.LoginUser;
 import com.example.entity.User;
+import com.example.mapper.MenuMapper;
 import com.example.mapper.UserMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,12 +13,16 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Resource
     UserMapper userMapper;
+
+    @Resource
+    private MenuMapper menuMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -28,7 +33,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new RuntimeException("用户名或密码错误");
         }
         //查询权限信息
-        ArrayList<String> list = new ArrayList<>(Arrays.asList("test", "admin"));
+//        ArrayList<String> list = new ArrayList<>(Arrays.asList("test", "admin"));
+        List<String> list = menuMapper.selectPermsByUserId(user.getId());
         return new LoginUser(user, list);
     }
 }
