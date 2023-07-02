@@ -25,6 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (Objects.isNull(user)) {
             throw new RuntimeException("用户名或密码错误");
         }
+        //TODO 查询权限信息
 
 
         return new LoginUser(user);

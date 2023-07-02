@@ -9,6 +9,7 @@ import com.example.utils.RedisCache;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,6 +43,16 @@ public class LoginServiceImpl implements LoginService {
         return new ResponseResult(200, "登录成功", map);
     }
 
+    @Override
+    public ResponseResult logout() {
+        //获取securityContextHolder中的用户id
+        UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authenticationToken.getPrincipal();
+        Long userId = loginUser.getUser().getId();
+        //删除redis中的值
+        redisCache.deleteObject("login:"+userId);
+        return new ResponseResult(200, "注销成功");
+    }
 
 
 }
