@@ -12,8 +12,10 @@ public class HelloController {
 
 
     @RequestMapping("/hello")
-//    @PreAuthorize("hasAuthority('test')")//写死test
-    @PreAuthorize("hasAuthority('system:dept:list')")
+//    @PreAuthorize("hasAnyAuthority('test', 'admin', 'test1', 'system:dept:list')")//写死test
+//    @PreAuthorize("hasAuthority('system:dept:list')")
+    @PreAuthorize("@ex.hasAuthority('system:dept:list')")//注意默认进行拼接ROLE_前缀, ROLE_system:dept:list , 对权限关键字有要求
+    //hasAnyRole同理
     public String hello() {
         return "hello";
     }

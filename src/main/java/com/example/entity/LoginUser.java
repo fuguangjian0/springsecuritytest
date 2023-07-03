@@ -30,7 +30,7 @@ public class LoginUser implements UserDetails {
     private List<SimpleGrantedAuthority> authorities;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<? extends GrantedAuthority> getAuthorities() { // 获取权限
 
         //把permissions中string类型的权限信息封装成实现类SimpleGrantedAuthority对象
 //        authorities = new ArrayList<>();

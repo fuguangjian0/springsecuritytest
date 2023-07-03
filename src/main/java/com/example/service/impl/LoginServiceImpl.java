@@ -27,21 +27,32 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public ResponseResult login(User user) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
+        // 把用户名&密码封装到 Authentication 对象
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
         if (Objects.isNull(authenticate)) throw new RuntimeException("登录失败");
+
+        // 生成jwt
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
+        //获取数据库id
         Long id = loginUser.getUser().getId();
+        //id转成字符串方便使用
         String userId = id.toString();
-        //生成jwt
+
+
+        //把loginUser对象存入redis中, 对应的userId作为key, key:value ['login:125xx' : loginUser对象]
+        redisCache.setCacheObject("login:"+userId, loginUser);
+
+        //id进行加密
         String jwt = JwtUtil.createJWT(userId);
         HashMap<String, String> map = new HashMap<>();
         map.put("token", jwt);
-        redisCache.setCacheObject("login:"+userId, loginUser);
-
+        //把map返回给前端 { 'token': jwt }
         return new ResponseResult(200, "登录成功", map);
     }
+
+
+
 
     @Override
     public ResponseResult logout() {

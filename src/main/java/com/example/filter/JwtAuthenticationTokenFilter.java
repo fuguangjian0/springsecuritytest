@@ -29,7 +29,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         //获取token
         String token = request.getHeader("token");
         if (!StringUtils.hasText(token)) {
-            //放行
+            // 没有'token'放行
             filterChain.doFilter(request, response);
             return;
         }
